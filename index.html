@@ -109,7 +109,13 @@ async function engine(){
  ]).then(lib=>{lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/pdf.worker.min.mjs';return lib});
  return enginePromise;
 }
-function route(){const u=new URL(location.href);u.searchParams.set('manual',activeKey);u.searchParams.set('page',String(page));history.replaceState(null,'',u.pathname+u.search+u.hash)}
+function route(){
+ // V3.7.8 embedded Apps Script runs inside an opaque sandbox. History URL
+ // rewriting may be forbidden there; the parent keeps the active page state.
+ if(embedded)return;
+ try{const u=new URL(location.href);u.searchParams.set('manual',activeKey);u.searchParams.set('page',String(page));history.replaceState(null,'',u.pathname+u.search+u.hash)}
+ catch(e){/* The PDF remains readable even if History API is restricted. */}
+}
 function updateControls(){const pages=doc?doc.numPages:(files.find(x=>x.id===activeKey)?.pages||1);$('pageInput').value=String(page);$('pageInput').max=String(pages);$('pageCount').textContent=String(pages);$('previous').disabled=page<=1;$('next').disabled=page>=pages;$('zoomText').textContent=fitWidth?'Fit':Math.round(scale*100)+'%';}
 function showPlaceholder(title){$('placeholderTitle').textContent=title;$('placeholder').style.display='flex';$('canvas').style.display='none';$('native').style.display='none';$('progress').value=0;}
 function clearPdf(){if(renderTask){try{renderTask.cancel()}catch(e){}renderTask=null;}if(loadingTask){try{loadingTask.destroy()}catch(e){}loadingTask=null;}if(doc){try{doc.destroy()}catch(e){}doc=null;}}
