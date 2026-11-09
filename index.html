@@ -1,0 +1,175 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>KESCO-MANUAL | PDF Viewer</title>
+<style>
+:root{color-scheme:light;--navy:#13213b;--navy2:#213657;--accent:#a62f4e;--line:#dce4ed;--muted:#64748b;--canvas:#e9eef4;--white:#fff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Segoe UI",Arial,sans-serif;color:var(--navy);background:#f3f6fa}
+button,select,input{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}
+header{background:var(--navy);color:#fff;padding:13px 18px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.brand{font-size:17px;font-weight:850;letter-spacing:-.3px}.sub{font-size:11px;opacity:.72;margin-top:2px}.host{font-size:11px;color:#dbe9ff;opacity:.85}
+.frame{max-width:1550px;margin:0 auto;padding:16px}.layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:13px}
+.side{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px;align-self:start}.side h2{font-size:12px;margin:6px 8px 12px;color:#718198}
+.item{width:100%;border:0;background:transparent;color:var(--navy2);border-radius:9px;text-align:left;padding:12px 11px;font-size:13px;font-weight:650;display:flex;justify-content:space-between;gap:6px;align-items:center}
+.item.on{background:#fff0f3;color:#a12643}.item:not(.on):hover{background:#f1f5fa}.index{font-size:10px;opacity:.6}
+.main{min-width:0}.toolbar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:9px}
+.group{display:flex;align-items:center;gap:6px}.flex{flex:1}.btn{border:1px solid #cbd5e1;background:#fff;border-radius:8px;padding:8px 10px;font-size:12px;font-weight:650;color:#253a59;white-space:nowrap}.btn:hover{background:#f4f8fc}
+.btn.prominent{border-color:#9d2c4b;color:#992d49}.btn.square{min-width:32px}.page{width:64px;border:1px solid #cbd5e1;border-radius:7px;padding:6px;text-align:center;min-height:34px}.count{font-size:12px;color:#65748b;white-space:nowrap}
+#message{font-size:12px;margin:4px 0 9px;color:#4b6078;min-height:18px;line-height:1.5}.error{color:#b42342!important}.success{color:#14694c!important}
+.display{position:relative;border:1px solid var(--line);border-radius:12px;background:var(--canvas);min-height:440px;overflow:auto;max-height:calc(100vh - 218px);text-align:center;padding:18px 12px}
+#canvas{display:none;margin:0 auto;background:#fff;box-shadow:0 6px 24px #142e4f30;max-width:none}
+#native{display:none;border:0;background:#fff;width:100%;height:calc(100vh - 270px);min-height:450px}
+#placeholder{display:flex;align-items:center;justify-content:center;min-height:370px;color:#6b7890;font-size:13px;padding:30px}
+.progress{width:100%;max-width:280px;margin:14px auto;display:block;accent-color:#a52f4b}footer{font-size:11px;color:#8391a6;padding:8px 2px}
+#mobileSelect{display:none;border:1px solid #cbd5e1;border-radius:8px;padding:8px;background:#fff;max-width:100%;width:100%;margin-bottom:9px}
+body.embedded header{display:none}body.embedded .frame{padding:0;max-width:none}body.embedded .side{display:none}body.embedded .layout{grid-template-columns:minmax(0,1fr)}body.embedded .toolbar{border-radius:8px}body.embedded .display{border-radius:8px;max-height:calc(100vh - 128px)}body.embedded footer{display:none}
+@media(max-width:760px){header{padding:12px}.frame{padding:8px}.layout{grid-template-columns:minmax(0,1fr)}.side{display:none}#mobileSelect{display:block}.toolbar{gap:6px;padding:9px}.btn{padding:7px}.display{padding:8px;max-height:calc(100vh - 175px)}#native{height:65vh;min-height:330px}.host{display:none}}
+</style>
+</head>
+<body>
+<header><div><div class="brand">KESCO-MANUAL</div><div class="sub">OFFICIAL DISASTER RESPONSE MANUAL | PDF ORIGINAL VIEWER</div></div><div class="host">PDF source: GitHub Pages</div></header>
+<main class="frame">
+  <select id="mobileSelect" aria-label="Choose manual"></select>
+  <div class="layout">
+    <nav class="side" aria-label="Manual selector"><h2>KESCO-MANUAL 5</h2><div id="manualNav"></div></nav>
+    <section class="main" aria-label="Original PDF content">
+      <div class="toolbar">
+        <span id="docTitle" style="font-size:13px;font-weight:800">PDF &#54413;&#49688;&#54644;</span>
+        <div class="flex"></div>
+        <div class="group"><button id="previous" class="btn square" type="button" aria-label="Previous page">&#8592;</button><label for="pageInput" class="count">PDF</label><input id="pageInput" class="page" type="number" value="1" min="1" step="1" inputmode="numeric" aria-label="PDF page"><span class="count">/ <span id="pageCount">--</span></span><button id="next" class="btn square" type="button" aria-label="Next page">&#8594;</button></div>
+        <div class="group"><button id="zoomOut" class="btn square" type="button" aria-label="Zoom out">&#8722;</button><span class="count" id="zoomText">Fit</span><button id="zoomIn" class="btn square" type="button" aria-label="Zoom in">+</button><button id="fit" class="btn" type="button">&#45320;&#48708; &#47582;&#52644;</button></div>
+        <a id="openOriginal" class="btn prominent" href="#" target="_blank" rel="noopener noreferrer">&#50896;&#48376;&#51012; &#49352; &#52285;&#50640;&#49436; &#50676;&#44592; &#8599;</a>
+        <a id="download" class="btn" href="#" download>&#50896;&#48376; PDF &#45236;&#47140;&#48155;&#44592; &#8595;</a>
+      </div>
+      <div id="message" role="status" aria-live="polite">Preparing the PDF viewer...</div>
+      <div id="display" class="display"><div id="placeholder"><div><strong id="placeholderTitle">Loading PDF...</strong><progress id="progress" class="progress" value="0" max="100"></progress><button class="btn" id="retry" type="button">&#50896;&#48376; &#45796;&#49884; &#48520;&#47084;&#50724;&#44592;</button></div></div><canvas id="canvas" aria-label="Rendered PDF page"></canvas><iframe id="native" title="Browser PDF viewer" referrerpolicy="no-referrer"></iframe></div>
+      <footer>Document pages are rendered from the original PDF. File owners must approve public publication.</footer>
+    </section>
+  </div>
+</main>
+<script>
+/* GitHub Pages runs Jekyll for branch deployments. The Jekyll build discovers
+ * the five already-uploaded PDF files automatically; no manual filename copy. */
+const KESCO_PDF_FILES = [
+{% assign pdf_sep = '' %}
+{% for file in site.static_files %}
+  {% assign pdf_ext = file.extname | downcase %}
+  {% if pdf_ext == '.pdf' %}
+    {{ pdf_sep }}{"name": {{ file.name | jsonify }}, "path": {{ file.path | relative_url | jsonify }}}
+    {% assign pdf_sep = ',' %}
+  {% endif %}
+{% endfor %}
+];
+</script>
+<script type="module">
+const $=id=>document.getElementById(id);
+const keys=[
+ {id:'storm',name:"01 | \ud48d\uc218\ud574",match:/\uD48D\uC218\uD574|\uD0DC\uD48D|\uD638\uC6B0/,number:1,pages:188},
+ {id:'quake',name:"02 | \uc9c0\uc9c4\u00b7\uc9c0\uc9c4\ud574\uc77c",match:/\uC9C0\uC9C4/,number:2,pages:267},
+ {id:'fire',name:"03 | \uc18c\ubc29\ub300\uc0c1\ubb3c",match:/\uC18C\uBC29\uB300\uC0C1\uBB3C/,number:3,pages:169},
+ {id:'electric',name:"04 | \uc804\uae30\uc0ac\uace0",match:/\uC804\uAE30\uC0AC\uACE0/,number:4,pages:128},
+ {id:'retail',name:"05 | \ub300\uaddc\ubaa8\uc810\ud3ec",match:/\uB300\uADDC\uBAA8\uC810\uD3EC/,number:5,pages:129}
+];
+let files=[],activeKey='',page=1,scale=1,fitWidth=true,doc=null,loadingTask=null,renderTask=null,job=0,enginePromise=null,mode='pdfjs';
+const params=new URLSearchParams(location.search);const embedded=params.get('embed')==='1';if(embedded)document.body.classList.add('embedded');
+function status(message,type='normal'){const e=$('message');e.textContent=message;e.className=type;}
+function emit(state,extra={}){if(window.parent===window)return;window.parent.postMessage({type:'KESCO_MANUAL_PDF_VIEWER_STATE_V377',manual:activeKey,page,pageCount:doc?doc.numPages:null,state,...extra},'*');}
+function urlFor(f){const u=new URL(f.path,location.origin);if(u.origin!==location.origin)throw Error('Invalid PDF host');return u.href;}
+function selectFile(rule,source){const numbered=source.find(f=>new RegExp('^\\s*'+rule.number+'\\s*[.\\)]').test(f.name));return numbered||source.find(f=>rule.match.test(f.name))||null;}
+async function discoverFiles(){
+ let list=(Array.isArray(KESCO_PDF_FILES)?KESCO_PDF_FILES:[]).filter(f=>f&&typeof f.name==='string'&&/\.pdf$/i.test(f.name));
+ if(list.length<5){
+   const response=await Promise.race([
+     fetch('https://api.github.com/repos/bigstone2e/kesco-manual-pdf/contents',{headers:{'Accept':'application/vnd.github+json'}}),
+     new Promise((_,reject)=>setTimeout(()=>reject(Error('The GitHub file list did not respond')),16000))
+   ]);
+   if(!response.ok)throw Error('File list HTTP '+response.status);
+   const data=await response.json();
+   list=Array.isArray(data)?data.filter(f=>f.type==='file'&&/\.pdf$/i.test(f.name)).map(f=>({name:f.name,path:new URL('./'+encodeURIComponent(f.name),location.origin+location.pathname).pathname})):[];
+ }
+ files=keys.map(rule=>({...rule,file:selectFile(rule,list)}));
+ const missing=files.filter(x=>!x.file);
+ if(missing.length)throw Error('Missing PDF file(s): '+missing.map(x=>x.name).join(', '));
+ $('manualNav').innerHTML=files.map(f=>'<button type="button" class="item" data-manual="'+f.id+'"><span>'+f.name+'</span><span class="index">'+f.pages+'p</span></button>').join('');
+ $('mobileSelect').innerHTML=files.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('');
+ document.querySelectorAll('[data-manual]').forEach(el=>el.addEventListener('click',()=>openManual(el.dataset.manual,1)));
+ $('mobileSelect').addEventListener('change',e=>openManual(e.target.value,1));
+}
+async function engine(){
+ if(enginePromise)return enginePromise;
+ enginePromise=Promise.race([
+    import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/pdf.min.mjs'),
+    new Promise((_,reject)=>setTimeout(()=>reject(Error('PDF.js library response timeout')),25000))
+ ]).then(lib=>{lib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/6.4.299/pdf.worker.min.mjs';return lib});
+ return enginePromise;
+}
+function route(){const u=new URL(location.href);u.searchParams.set('manual',activeKey);u.searchParams.set('page',String(page));history.replaceState(null,'',u.pathname+u.search+u.hash)}
+function updateControls(){const pages=doc?doc.numPages:(files.find(x=>x.id===activeKey)?.pages||1);$('pageInput').value=String(page);$('pageInput').max=String(pages);$('pageCount').textContent=String(pages);$('previous').disabled=page<=1;$('next').disabled=page>=pages;$('zoomText').textContent=fitWidth?'Fit':Math.round(scale*100)+'%';}
+function showPlaceholder(title){$('placeholderTitle').textContent=title;$('placeholder').style.display='flex';$('canvas').style.display='none';$('native').style.display='none';$('progress').value=0;}
+function clearPdf(){if(renderTask){try{renderTask.cancel()}catch(e){}renderTask=null;}if(loadingTask){try{loadingTask.destroy()}catch(e){}loadingTask=null;}if(doc){try{doc.destroy()}catch(e){}doc=null;}}
+function useNativeFallback(original,error){
+ mode='native';showPlaceholder('');$('placeholder').style.display='none';$('native').src=original+'#page='+page+'&zoom=page-width';$('native').style.display='block';
+ status('Browser PDF fallback is active. Verify the page visually; use Open original if needed. ('+error+')');
+ emit('fallback',{error:String(error).slice(0,300)});
+}
+async function displayPage(){
+ const myJob=++job,local=doc;
+ if(!local||mode!=='pdfjs')return;
+ if(renderTask){try{renderTask.cancel()}catch(e){}renderTask=null;}
+ showPlaceholder('Rendering page '+page+'...');status('Rendering the original PDF page...');updateControls();
+ try{
+  const p=await local.getPage(page);if(myJob!==job)return;
+  const maxWidth=Math.max(280,$('display').clientWidth-30);const at1=p.getViewport({scale:1});const factor=fitWidth?Math.min(2.6,Math.max(.35,maxWidth/at1.width)):scale;const v=p.getViewport({scale:factor});
+  const dpr=Math.min(2,window.devicePixelRatio||1);const canvas=$('canvas');canvas.width=Math.floor(v.width*dpr);canvas.height=Math.floor(v.height*dpr);canvas.style.width=Math.floor(v.width)+'px';canvas.style.height=Math.floor(v.height)+'px';
+  const context=canvas.getContext('2d',{alpha:false});if(!context)throw Error('Canvas was not available');
+  renderTask=p.render({canvasContext:context,canvas,viewport:v,transform:dpr!==1?[dpr,0,0,dpr,0,0]:undefined});
+  await Promise.race([renderTask.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('Rendering timed out')),45000))]);
+  if(myJob!==job)return;
+  $('placeholder').style.display='none';canvas.style.display='block';$('display').scrollTop=0;$('display').scrollLeft=0;
+  status('PDF '+page+' / '+local.numPages+' rendered from the original PDF.','success');updateControls();emit('rendered');
+ }catch(e){if(myJob!==job)return;const f=files.find(x=>x.id===activeKey);useNativeFallback(urlFor(f.file),String(e.message||e));}
+ finally{if(myJob===job)renderTask=null;}
+}
+async function openManual(id,targetPage=1){
+ const f=files.find(x=>x.id===id);if(!f){status('Unknown manual requested.','error');return;}
+ const same=activeKey===id&&doc&&mode==='pdfjs';activeKey=id;page=Math.max(1,Math.min(Number(targetPage)||1,same?doc.numPages:f.pages));
+ document.querySelectorAll('[data-manual]').forEach(e=>e.classList.toggle('on',e.dataset.manual===id));$('mobileSelect').value=id;$('docTitle').textContent=f.name;
+ const pdfUrl=urlFor(f.file);$('openOriginal').href=pdfUrl+'#page='+page;$('download').href=pdfUrl;$('download').download=f.file.name;
+ route();updateControls();
+ if(same){await displayPage();return;}
+ const currentRequest=++job;clearPdf();showPlaceholder('Loading '+f.name+'...');status('Connecting to the GitHub Pages PDF original...');
+ try{
+  const lib=await engine();if(activeKey!==id||currentRequest!==job)return;
+  mode='pdfjs';loadingTask=lib.getDocument({url:pdfUrl,isEvalSupported:false});
+  loadingTask.onProgress=ev=>{if(activeKey===id&&ev.total>0)$('progress').value=Math.min(100,Math.round(ev.loaded/ev.total*100));};
+  const loaded=await Promise.race([loadingTask.promise,new Promise((_,reject)=>setTimeout(()=>reject(Error('Original PDF response timeout')),60000))]);
+  if(activeKey!==id||currentRequest!==job){loaded.destroy();return;}
+  doc=loaded;page=Math.max(1,Math.min(page,doc.numPages));
+  if(doc.numPages!==f.pages)status('Page count differs from the expected catalog. Loaded '+doc.numPages+' pages.','error');
+  await displayPage();
+ }catch(e){if(activeKey!==id||currentRequest!==job)return;useNativeFallback(pdfUrl,String(e.message||e));}
+}
+function pageTo(value){const max=doc?doc.numPages:(files.find(x=>x.id===activeKey)?.pages||1);const p=Math.max(1,Math.min(max,Math.trunc(Number(value)||1)));page=p;const f=files.find(x=>x.id===activeKey);if(f){$('openOriginal').href=urlFor(f.file)+'#page='+page;if(mode==='native')$('native').src=urlFor(f.file)+'#page='+page+'&zoom=page-width';}route();updateControls();if(mode==='pdfjs')displayPage();else emit('fallback');}
+$('previous').addEventListener('click',()=>pageTo(page-1));$('next').addEventListener('click',()=>pageTo(page+1));$('pageInput').addEventListener('change',e=>pageTo(e.target.value));
+$('zoomIn').addEventListener('click',()=>{fitWidth=false;scale=Math.min(3.2,scale+.2);if(mode==='pdfjs')displayPage()});
+$('zoomOut').addEventListener('click',()=>{fitWidth=false;scale=Math.max(.4,scale-.2);if(mode==='pdfjs')displayPage()});
+$('fit').addEventListener('click',()=>{fitWidth=true;if(mode==='pdfjs')displayPage()});
+$('retry').addEventListener('click',()=>openManual(activeKey,page));
+window.addEventListener('message',event=>{
+ const data=event.data;if(!data||data.type!=='KESCO_MANUAL_PDF_GOTO_V377')return;
+ if(event.source!==window.parent)return;
+ if(event.origin!=='null'&&!/^https:\/\/(?:script\.googleusercontent\.com|script\.google\.com|[a-z0-9-]+\.googleusercontent\.com|localhost)(?::\d+)?$/.test(event.origin))return;
+ if(!keys.some(f=>f.id===data.manual))return;
+ const dest=Number(data.page);if(!Number.isInteger(dest)||dest<1||dest>1000)return;
+ if(data.manual===activeKey)pageTo(dest);else openManual(data.manual,dest);
+});
+window.addEventListener('resize',()=>{if(doc&&mode==='pdfjs'&&fitWidth)displayPage()});
+(async()=>{try{await discoverFiles();await openManual(keys.some(x=>x.id===params.get('manual'))?params.get('manual'):'storm',Number(params.get('page'))||1);}catch(e){showPlaceholder('Could not find 5 PDF files');status(String(e.message||e)+'. Check GitHub Pages build and file names.','error');emit('error',{error:String(e.message||e)});}})();
+</script>
+</body></html>
