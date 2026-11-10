@@ -178,4 +178,5 @@ window.addEventListener('message',event=>{
 window.addEventListener('resize',()=>{if(doc&&mode==='pdfjs'&&fitWidth)displayPage()});
 (async()=>{try{await discoverFiles();await openManual(keys.some(x=>x.id===params.get('manual'))?params.get('manual'):'storm',Number(params.get('page'))||1);}catch(e){showPlaceholder('Could not find 5 PDF files');status(String(e.message||e)+'. Check GitHub Pages build and file names.','error');emit('error',{error:String(e.message||e)});}})();
 </script>
+<script src="./kesco-fit-page.js?v=20261110" defer></script>
 </body></html>
